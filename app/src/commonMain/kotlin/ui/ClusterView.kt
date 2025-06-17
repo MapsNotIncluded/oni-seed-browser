@@ -1,6 +1,6 @@
 /*
- * ONI Seed Browser
- * Copyright (C) 2025 Stefan Oltmann
+ * Oxygen Not Included Seed Browser
+ * Copyright (C) 2025 The Maps Not Included Authors
  * https://stefan-oltmann.de/oni-seed-browser
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,10 +15,13 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * See the AUTHORS file in the project root for a full list of contributors.
  */
 
 package ui
 
+import ClusterMetadataView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -128,144 +131,7 @@ fun ClusterView(
         else
             ORIGINAL_URL + cluster.coordinate
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.offset(y = -4.dp)
-        ) {
-
-            /*
-             * Set notice back after 3 seconds.
-             */
-            LaunchedEffect(urlWasCopied.value) {
-
-                if (!urlWasCopied.value)
-                    return@LaunchedEffect
-
-                delay(1000)
-
-                urlWasCopied.value = false
-            }
-
-            Spacer(modifier = Modifier.width(defaultSpacing + halfSpacing))
-
-            Row(
-                modifier = Modifier.noRippleClickable {
-
-                    clipboardManager.setText(AnnotatedString(url))
-
-                    urlWasCopied.value = true
-                }
-            ) {
-
-                Text(
-                    text = if (urlWasCopied.value)
-                        stringResource(Res.string.uiCopiedToClipboard)
-                    else
-                        url,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                DefaultSpacer()
-
-                if (!urlWasCopied.value) {
-
-                    val copyHovered = remember { mutableStateOf(false) }
-
-                    Icon(
-                        imageVector = ContentCopy,
-                        contentDescription = null,
-                        tint = if (copyHovered.value)
-                            hoverColor
-                        else
-                            MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .onHover(copyHovered)
-                            .size(16.dp)
-                            .offset(y = 2.dp)
-                    )
-                }
-            }
-
-            HalfSpacer()
-
-            val openHovered = remember { mutableStateOf(false) }
-
-            val uriHandler = LocalUriHandler.current
-
-            Icon(
-                imageVector = IconExternalLink,
-                contentDescription = null,
-                tint = if (openHovered.value)
-                    hoverColor
-                else
-                    MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .onHover(openHovered)
-                    .size(16.dp)
-                    .noRippleClickable {
-                        uriHandler.openUri(url)
-                    }
-            )
-
-            VerticalDivider(
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .height(doubleSpacing)
-                    .padding(horizontal = defaultSpacing)
-            )
-
-            Text(
-                text = "V " + cluster.gameVersion,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            val username = steamIdToUsernameMap[cluster.uploaderSteamIdHash]
-
-            if (username != null) {
-
-                VerticalDivider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .height(doubleSpacing)
-                        .padding(horizontal = defaultSpacing)
-                )
-
-                Text(
-                    text = username,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-            val uploadDate = cluster.uploadDate
-
-            if (uploadDate != null) {
-
-                VerticalDivider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .height(doubleSpacing)
-                        .padding(horizontal = defaultSpacing)
-                )
-
-                Text(
-                    text = formatDate(uploadDate),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-        }
+        ClusterMetadataView(cluster, steamIdToUsernameMap, true)
     }
 
     HalfSpacer()

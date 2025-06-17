@@ -19,8 +19,7 @@
  * See the AUTHORS file in the project root for a full list of contributors.
  */
 
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.StorageSettings
+package web
 
-actual val settings: Settings = StorageSettings()
-actual fun getPlatformType(): PlatformType = PlatformType.WebWasm
+@JsModule("./interop.js")
+external fun addLeafletBoxSendEventListener()
