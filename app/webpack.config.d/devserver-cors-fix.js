@@ -19,8 +19,16 @@
  * See the AUTHORS file in the project root for a full list of contributors.
  */
 
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.StorageSettings
-
-actual val settings: Settings = StorageSettings()
-actual fun getPlatformType(): PlatformType = PlatformType.WebWasm
+config.devServer.headers = {
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "require-corp",
+    "Cross-Origin-Resource-Policy": "cross-origin",
+    "Access-Control-Allow-Origin": "*",
+};
+/*
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+    "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
+    "Access-Control-Allow-Origin": "http://localhost:5173/",
+    "Content-Security-Policy": "frame-ancestors self http://localhost:5173/ https://mapsnotincluded.org;"
+ */
